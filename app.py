@@ -174,11 +174,15 @@ def buscar_licencias(
         return []
 
 
-def marcar_cargada(id_: int):
+def marcar_cargada(id_: int, fecha_carga: Optional[dt.date] = None):
+    """Marca una licencia como cargada con la fecha especificada (o hoy si no se especifica)"""
+    if fecha_carga is None:
+        fecha_carga = dt.date.today()
+    
     return actualizar_licencia(
         id_,
         estado_carga="Cargada",
-        fecha_carga_gei=dt.date.today()
+        fecha_carga_gei=fecha_carga
     )
 
 
@@ -199,14 +203,53 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Estilos CSS mejorados para impresión
 st.markdown("""
     <style>
     @media print {
-        .stButton, .stTabs, .stDownloadButton {
+        /* Ocultar elementos de interfaz al imprimir */
+        .stButton, .stTabs, .stDownloadButton, .stNumberInput, 
+        .stSelectbox, .stTextInput, .stDateInput, .stFormSubmitButton,
+        .stForm, header, footer, .main > div:first-child {
             display: none !important;
         }
+        
+        /* Mostrar solo el contenido de la tabla */
         .dataframe {
             font-size: 10pt !important;
+            width: 100% !important;
+        }
+        
+        /* Ajustar métricas */
+        [data-testid="stMetricValue"] {
+            font-size: 20pt !important;
+        }
+        
+        /* Título visible */
+        h1, h2, h3 {
+            page-break-after: avoid;
+        }
+        
+        /* Evitar cortes de página en tablas */
+        table, tr, td, th {
+            page-break-inside: avoid;
+        }
+        
+        /* Ajustar márgenes */
+        @page {
+            margin: 1cm;
+        }
+        
+        body {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+    }
+    
+    @media screen {
+        /* Estilos para pantalla */
+        .print-only {
+            display: none;
         }
     }
     </style>
@@ -338,9 +381,16 @@ with tab2:
         col_acc1, col_acc2, col_acc3 = st.columns(3)
 
         with col_acc1:
+            st.markdown("##### Marcar como CARGADA")
             sel_id = st.number_input("ID a marcar como CARGADA", min_value=1, step=1, key="marcar_id")
+            fecha_carga_sel = st.date_input(
+                "Fecha de carga en GEI", 
+                value=dt.date.today(),
+                key="fecha_carga_gei",
+                help="Seleccioná la fecha en que se cargó en GEI"
+            )
             if st.button("✅ Marcar como CARGADA", use_container_width=True):
-                success, msg = marcar_cargada(int(sel_id))
+                success, msg = marcar_cargada(int(sel_id), fecha_carga_sel)
                 if success:
                     st.success(msg)
                     st.rerun()
