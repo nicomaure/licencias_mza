@@ -625,3 +625,4 @@ with tab4:
 
 st.divider()
 st.caption("🗂️ Sistema de Gestión de Licencias - Secretaría Escolar Mendoza | Versión 2.0")
+st.caption("💻 Desarrollado por **Nicolas Maure** | [nicomaure.com.ar](https://nicomaure.com.ar)")
