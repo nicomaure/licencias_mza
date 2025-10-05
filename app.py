@@ -98,6 +98,47 @@ def to_df(rows: List[Licencia]) -> pd.DataFrame:
     return df
 
 
+def df_to_html_table(df: pd.DataFrame) -> str:
+    """Genera tabla HTML para impresión con estilos inline"""
+    if df.empty:
+        return "<p>No hay datos</p>"
+    
+    # Renombrar columnas para mejor legibilidad
+    columnas_legibles = {
+        'id': 'ID',
+        'apellido': 'Apellido',
+        'nombre': 'Nombre',
+        'rol': 'Rol',
+        'fecha_inicio': 'Inicio',
+        'fecha_fin': 'Fin',
+        'articulo': 'Artículo',
+        'codigo_osep': 'OSEP',
+        'estado_carga': 'Estado',
+        'fecha_carga_gei': 'Carga GEI',
+        'observaciones': 'Observaciones'
+    }
+    
+    html = '<table class="print-table" style="width:100%; border-collapse:collapse; font-size:9pt;">'
+    html += '<thead><tr style="background-color:#f0f0f0;">'
+    
+    for col in df.columns:
+        col_name = columnas_legibles.get(col, col)
+        html += f'<th style="border:1px solid #ddd; padding:4px 6px; text-align:left; font-weight:bold;">{col_name}</th>'
+    
+    html += '</tr></thead><tbody>'
+    
+    for _, row in df.iterrows():
+        html += '<tr>'
+        for col in df.columns:
+            val = row[col] if pd.notna(row[col]) else ''
+            html += f'<td style="border:1px solid #ddd; padding:4px 6px;">{val}</td>'
+        html += '</tr>'
+    
+    html += '</tbody></table>'
+    return html
+
+
+
 def crear_licencia(**kwargs):
     try:
         with Session(engine) as s:
@@ -206,50 +247,133 @@ st.set_page_config(
 # Estilos CSS mejorados para impresión
 st.markdown("""
     <style>
-    @media print {
-        /* Ocultar elementos de interfaz al imprimir */
-        .stButton, .stTabs, .stDownloadButton, .stNumberInput, 
-        .stSelectbox, .stTextInput, .stDateInput, .stFormSubmitButton,
-        .stForm, header, footer, .main > div:first-child {
+    /* Estilos para pantalla - ocultar tabla de impresión */
+    @media screen {
+        .print-table {
             display: none !important;
         }
-        
-        /* Mostrar solo el contenido de la tabla */
-        .dataframe {
-            font-size: 10pt !important;
-            width: 100% !important;
-        }
-        
-        /* Ajustar métricas */
-        [data-testid="stMetricValue"] {
-            font-size: 20pt !important;
-        }
-        
-        /* Título visible */
-        h1, h2, h3 {
-            page-break-after: avoid;
-        }
-        
-        /* Evitar cortes de página en tablas */
-        table, tr, td, th {
-            page-break-inside: avoid;
-        }
-        
-        /* Ajustar márgenes */
-        @page {
-            margin: 1cm;
-        }
-        
-        body {
-            print-color-adjust: exact;
-            -webkit-print-color-adjust: exact;
+        .print-container {
+            display: none !important;
         }
     }
     
-    @media screen {
-        /* Estilos para pantalla */
-        .print-only {
-            display: none;
+    /* Estilos para impresión */
+    @media print {
+        /* Ocultar elementos de Streamlit */
+        [data-testid="stHeader"],
+        [data-testid="stToolbar"],
+        [data-testid="stDecoration"],
+        [data-testid="stStatusWidget"],
+        [data-testid="stMainMenu"],
+        header,
+        footer,
+        .stApp > header,
+        .stDeployButton,
+        button,
+        .stTabs,
+        .stMarkdown > div > div > button,
+        iframe {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        
+        /* Ocultar dataframe interactivo */
+        [data-testid="stDataFrame"] {
+            display: none !important;
+        }
+        
+        /* Mostrar contenedor de impresión */
+        .print-container {
+            display: block !important;
+            visibility: visible !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 20px !important;
+        }
+        
+        /* Tabla de impresión */
+        .print-table {
+            display: table !important;
+            visibility: visible !important;
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 20px 0 !important;
+            font-family: Arial, sans-serif !important;
+        }
+        
+        .print-table thead tr {
+            background-color: #e0e0e0 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .print-table th {
+            border: 1px solid #000 !important;
+            padding: 6px 8px !important;
+            text-align: left !important;
+            font-weight: bold !important;
+            font-size: 9pt !important;
+            background-color: #e0e0e0 !important;
+        }
+        
+        .print-table td {
+            border: 1px solid #000 !important;
+            padding: 5px 8px !important;
+            font-size: 8pt !important;
+        }
+        
+        .print-table tr {
+            page-break-inside: avoid !important;
+        }
+        
+        /* Título y encabezados */
+        h1, h2, h3, h4, h5, h6 {
+            color: #000 !important;
+            page-break-after: avoid !important;
+        }
+        
+        .print-title {
+            font-size: 20pt !important;
+            font-weight: bold !important;
+            margin-bottom: 15px !important;
+            color: #000 !important;
+        }
+        
+        .print-subtitle {
+            font-size: 14pt !important;
+            margin-bottom: 10px !important;
+            color: #333 !important;
+        }
+        
+        .print-metrics {
+            display: flex !important;
+            justify-content: space-around !important;
+            margin: 15px 0 !important;
+            font-size: 11pt !important;
+        }
+        
+        .print-metric {
+            text-align: center !important;
+            padding: 5px 10px !important;
+        }
+        
+        /* Configuración de página */
+        @page {
+            size: landscape;
+            margin: 1.5cm 1cm;
+        }
+        
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        /* Forzar visibilidad */
+        .element-container,
+        .stMarkdown,
+        [data-testid="stVerticalBlock"] {
+            display: block !important;
+            visibility: visible !important;
         }
     }
     </style>
@@ -375,7 +499,32 @@ with tab2:
             docentes = len([r for r in rows if r.rol == "Docente"])
             st.metric("Docentes", docentes)
 
+        # Tabla interactiva para pantalla
         st.dataframe(df, use_container_width=True, hide_index=True)
+        
+        # HTML completo para impresión
+        html_table = df_to_html_table(df)
+        celadores = len([r for r in rows if r.rol == "Celador"])
+        print_html = f"""
+        <div class="print-container">
+            <div class="print-title">🔎 Listado de Licencias - Secretaría Escolar Mendoza</div>
+            
+            <div class="print-metrics">
+                <div class="print-metric"><strong>Total:</strong> {len(df)}</div>
+                <div class="print-metric"><strong>Pendientes:</strong> {pendientes}</div>
+                <div class="print-metric"><strong>Cargadas:</strong> {cargadas}</div>
+                <div class="print-metric"><strong>Docentes:</strong> {docentes} | <strong>Celadores:</strong> {celadores}</div>
+            </div>
+            
+            {html_table}
+            
+            <div style="margin-top: 20px; font-size: 9pt; text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
+                <p>Sistema de Gestión de Licencias - Secretaría Escolar Mendoza | Versión 2.0</p>
+                <p>Desarrollado por Nicolas Maure | nicomaure.com.ar</p>
+            </div>
+        </div>
+        """
+        st.markdown(print_html, unsafe_allow_html=True)
 
         st.divider()
         col_acc1, col_acc2, col_acc3 = st.columns(3)
@@ -559,19 +708,25 @@ with tab4:
         with col4:
             st.metric("Docentes / Celadores", f"{docentes} / {celadores}")
 
-        if hoy > ultimo_dia and pendientes > 0:
-            st.error(
-                f"⚠️ **ATENCIÓN:** Hay {pendientes} licencia(s) PENDIENTE(S) - El plazo venció el {ultimo_dia:%d/%m/%Y}")
-        elif pendientes > 0:
-            dias_restantes = (ultimo_dia - hoy).days
-            st.warning(f"⏰ Quedan {dias_restantes} día(s) para cargar {pendientes} licencia(s) pendiente(s)")
-        else:
-            st.success("✅ Todas las licencias del mes están cargadas")
+        # Alertas (ocultas en impresión)
+        with st.container():
+            if hoy > ultimo_dia and pendientes > 0:
+                st.error(
+                    f"⚠️ **ATENCIÓN:** Hay {pendientes} licencia(s) PENDIENTE(S) - El plazo venció el {ultimo_dia:%d/%m/%Y}")
+            elif pendientes > 0:
+                dias_restantes = (ultimo_dia - hoy).days
+                st.warning(f"⏰ Quedan {dias_restantes} día(s) para cargar {pendientes} licencia(s) pendiente(s)")
+            else:
+                st.success("✅ Todas las licencias del mes están cargadas")
 
         st.divider()
+        
+        # Tabla interactiva para pantalla
         st.dataframe(df_mes, use_container_width=True, hide_index=True)
 
         st.divider()
+        
+        # Botones de exportación e impresión
         col_exp1, col_exp2, col_exp3 = st.columns(3)
 
         with col_exp1:
@@ -613,14 +768,114 @@ with tab4:
                 st.error(f"Error al generar Excel: {e}")
 
         with col_exp3:
-            st.button("🖨️ Imprimir (Ctrl+P)", use_container_width=True,
-                      help="Usa Ctrl+P o Cmd+P para abrir el diálogo de impresión del navegador")
+            # Botón de impresión - genera HTML descargable
+            html_table_print = df_to_html_table(df_mes)
+            
+            print_content = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Licencias</title>
+    <style>
+        @page {{ size: landscape; margin: 1cm; }}
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }}
+        .title {{
+            font-size: 20pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }}
+        .subtitle {{
+            font-size: 14pt;
+            margin-bottom: 15px;
+            text-align: center;
+        }}
+        .metrics {{
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+        }}
+        .metric {{
+            text-align: center;
+            font-size: 11pt;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 9pt;
+        }}
+        th {{
+            border: 1px solid #000;
+            padding: 6px 8px;
+            text-align: left;
+            font-weight: bold;
+            background-color: #e0e0e0;
+        }}
+        td {{
+            border: 1px solid #000;
+            padding: 5px 8px;
+        }}
+        .footer {{
+            margin-top: 30px;
+            font-size: 9pt;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }}
+        @media print {{
+            button {{ display: none; }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="title">📋 Reporte de Licencias - Secretaría Escolar Mendoza</div>
+    <div class="subtitle">Período: {primer_dia:%d/%m/%Y} — {ultimo_dia:%d/%m/%Y}</div>
+    
+    <div class="metrics">
+        <div class="metric"><strong>Total:</strong> {len(df_mes)}</div>
+        <div class="metric"><strong>Cargadas:</strong> {cargadas} ({cargadas / len(df_mes) * 100:.0f}%)</div>
+        <div class="metric"><strong>Pendientes:</strong> {pendientes} ({pendientes / len(df_mes) * 100:.0f}%)</div>
+        <div class="metric"><strong>Docentes:</strong> {docentes} | <strong>Celadores:</strong> {celadores}</div>
+    </div>
+    
+    {html_table_print}
+    
+    <div class="footer">
+        <p>Sistema de Gestión de Licencias - Secretaría Escolar Mendoza | Versión 2.0</p>
+        <p>Desarrollado por Nicolas Maure | nicomaure.com.ar</p>
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()" style="padding: 10px 20px; font-size: 14px; background-color: #ff4b4b; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            🖨️ Imprimir este reporte
+        </button>
+    </div>
+</body>
+</html>"""
+            
+            # Descargar como archivo HTML
+            st.download_button(
+                label="🖨️ Descargar vista de impresión",
+                data=print_content,
+                file_name=f"reporte_licencias_{primer_dia:%Y_%m}.html",
+                mime="text/html",
+                use_container_width=True,
+                help="Descarga el reporte en HTML. Luego ábrelo y presiona Ctrl+P para imprimir"
+            )
 
         st.caption("""
-        💡 **Tips para imprimir:**
-        - Presioná **Ctrl+P** (Windows) o **Cmd+P** (Mac) para imprimir
-        - Seleccioná 'Guardar como PDF' en el destino para generar un PDF
-        - Ajustá los márgenes y orientación según necesites
+        💡 **Para imprimir:**
+        1. Haz clic en "🖨️ Descargar vista de impresión"
+        2. Abre el archivo HTML descargado en tu navegador
+        3. Presiona Ctrl+P o haz clic en el botón "Imprimir"
+        4. Selecciona tu impresora o "Guardar como PDF"
         """)
 
 st.divider()
