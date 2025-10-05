@@ -3,7 +3,7 @@
 
 Sistema completo de gestión de licencias escolares para Mendoza, Argentina. Desarrollado con Python y Streamlit.
 
-[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.31-red.svg)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -35,6 +35,11 @@ Sistema completo de gestión de licencias escolares para Mendoza, Argentina. Des
 ### Opción A: Ejecutar directamente (Recomendado para desarrollo)
 
 1. **Clonar el repositorio:**
+```bash
+git clone https://github.com/nicomaure/licencias_mza.git
+cd licencias_mza
+```
+
 2. **Ejecutar:**
    - **Windows:** Doble clic en `run.bat`
    - **Linux/Mac:** `bash run.sh`
@@ -44,31 +49,41 @@ Sistema completo de gestión de licencias escolares para Mendoza, Argentina. Des
 ### Opción B: Generar ejecutable (.exe)
 
 1. **Generar el ejecutable:**
-bash # Windows build_exe.bat # O manualmente: pyinstaller --clean licencias.spec
+```bash
+# Windows
+build_exe.bat
+
+# O manualmente:
+pyinstaller --clean licencias.spec
+```
 
 2. **El ejecutable estará en:** `dist/LicenciasEscolares/`
 
 3. **Distribuir:**
    - Comprimir toda la carpeta `dist/LicenciasEscolares/`
-   - Compartir el ZIP
-   - Los usuarios solo ejecutan `LicenciasEscolares.exe`
+   - Compartir el archivo ZIP
+   - Los usuarios descomprimen y ejecutan `LicenciasEscolares.exe`
 
 ## 📦 Instalación manual
 
 Si prefieres instalar manualmente:
 
-bash
+```bash
 # Crear entorno virtual
 python -m venv .venv
+
 # Activar entorno virtual
 # Windows:
 .venv\Scripts\activate
 # Linux/Mac:
 source .venv/bin/activate
+
 # Instalar dependencias
 pip install -r requirements.txt
+
 # Ejecutar aplicación
 streamlit run app.py
+```
 
 
 ## 🗄️ Ubicación de los datos
@@ -80,9 +95,15 @@ Los datos se guardan automáticamente en:
 
 ### Hacer backup
 
+**Windows:**
 1. Presionar `Windows + R`
 2. Escribir: `%LOCALAPPDATA%\LicenciasEscolares`
 3. Copiar el archivo `licencias.db`
+
+**Linux/Mac:**
+```bash
+cp ~/.licencias_escolares/licencias.db ~/backup_licencias.db
+```
 
 ### Restaurar backup
 
@@ -145,7 +166,14 @@ Los datos se guardan automáticamente en:
 
 ## 📦 Dependencias
 
-streamlit==1.31.0 pandas==2.2.0 sqlmodel==0.0.14 openpyxl==3.1.2 python-dateutil==2.8.2 pyinstaller==6.3.0 (solo para generar .exe)
+```
+streamlit==1.31.0
+pandas==2.2.0
+sqlmodel==0.0.14
+openpyxl==3.1.2
+python-dateutil==2.8.2
+pyinstaller==6.3.0  # Solo para generar .exe
+```
 
 ## 🐛 Solución de problemas
 
@@ -164,15 +192,17 @@ streamlit==1.31.0 pandas==2.2.0 sqlmodel==0.0.14 openpyxl==3.1.2 python-dateutil
 rmdir /s /q build dist
 pyinstaller --clean licencias.spec
 ```
+
 ### La aplicación no se abre en el navegador
 - Abrir manualmente: `http://localhost:8501`
 
 ### Error de importlib_metadata
-- El nuevo corrige esto automáticamente `.spec`
+- El archivo `.spec` corrige esto automáticamente
 - Si persiste: `pip install importlib-metadata`
 
 ## 🔄 Actualizar la aplicación
 
+```bash
 # Descargar últimos cambios
 git pull origin main
 
@@ -180,6 +210,11 @@ git pull origin main
 pip install -r requirements.txt --upgrade
 
 # Los datos NO se pierden (están en AppData)
+```
+
+## 📁 Estructura del proyecto
+
+```
 licencias_mza/
 ├── app.py                 # Aplicación principal
 ├── requirements.txt       # Dependencias
@@ -188,9 +223,12 @@ licencias_mza/
 ├── run.sh                # Ejecutar en Linux/Mac
 ├── build_exe.bat         # Generar ejecutable Windows
 ├── README.md             # Este archivo
+├── LICENSE               # Licencia MIT
 ├── .gitignore           # Archivos ignorados por Git
 └── .venv/               # Entorno virtual (no se sube a Git)
+```
 ## 🤝 Contribuir
+
 1. Fork el proyecto
 2. Crear una rama: `git checkout -b feature/nueva-funcionalidad`
 3. Commit cambios: `git commit -am 'Agregar nueva funcionalidad'`
@@ -198,160 +236,37 @@ licencias_mza/
 5. Crear Pull Request
 
 ## 📄 Licencia
+
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
 ## 👨‍💻 Autor
+
 **Nicolas Maure**
 - 🌐 Website: [nicomaure.com.ar](https://nicomaure.com.ar)
-- 📧 Email: [Contacto](https://nicomaure.com.ar)
+- 📧 Email: Contacto a través del sitio web
 
 ## 🙏 Agradecimientos
+
 - Secretaría Escolar de Mendoza
 - Comunidad de Streamlit
 - Todos los contribuidores
 
 ## 📞 Soporte
+
 Para problemas técnicos o sugerencias:
-1. Abrir un [Issue en GitHub](https://github.com/tuusuario/licencias_mza/issues)
+1. Abrir un [Issue en GitHub](https://github.com/nicomaure/licencias_mza/issues)
 2. Contactar al desarrollador
 
-🗂️ Sistema de Gestión de Licencias v2.0
-Hecho por [Nicolas Maure](https://nicomaure.com.ar)
+---
+
+<div align="center">
+
+🗂️ **Sistema de Gestión de Licencias v2.0**
+
+Hecho con ❤️ por [Nicolas Maure](https://nicomaure.com.ar)
+
 Secretaría Escolar - Mendoza, Argentina
 
-## 4. Crear archivo LICENSE
+</div>
 
-<llm-snippet-file>LICENSE</llm-snippet-file>
-text MIT License
-Copyright (c) 2025 Nicolas Maure - nicomaure.com.ar
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-## 5. Actualizar requirements.txt
-
-<llm-snippet-file>requirements.txt</llm-snippet-file>
-text streamlit==1.31.0 pandas==2.2.0 sqlmodel==0.0.14 openpyxl==3.1.2 python-dateutil==2.8.2 pyinstaller==6.3.0 importlib-metadata>=4.0.0
-
-## 6. Actualizar .gitignore
-
-<llm-snippet-file>.gitignore</llm-snippet-file>
-```gitignore
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual Environment
-.venv/
-venv/
-ENV/
-env/
-
-# Base de datos local (no subir datos sensibles)
-*.db
-*.sqlite
-*.sqlite3
-
-# Streamlit
-.streamlit/
-.streamlit/secrets.toml
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# OS
-Thumbs.db
-desktop.ini
-.DS_Store
-
-# Temporales
-temp*.xlsx
-temp*.csv
-*.tmp
-*.bak
-
-# Logs
-*.log
-
-# PyInstaller
-*.spec.bak
-build/
-dist/
-
-# Pytest
-.pytest_cache/
-.coverage
-htmlcov/
-
-# MyPy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-```
-
-## 📋 Checklist final para GitHub
-
-Antes de subir a GitHub, verificá:
-
-- ✅ **Créditos agregados** en el footer de la aplicación
-- ✅ **Función de impresión mejorada** con CSS optimizado
-- ✅ **Problema de PyInstaller resuelto** (metadatos incluidos)
-- ✅ **README.md completo** con toda la documentación
-- ✅ **LICENSE agregada** (MIT)
-- ✅ **.gitignore actualizado** (no subir .db, .venv, etc.)
-- ✅ **Fecha de carga GEI personalizable**
-
-## 🚀 Pasos para subir a GitHub
-
-```bash
-# 1. Inicializar Git (si no está inicializado)
-git init
-
-# 2. Agregar todos los archivos
-git add .
-
-# 3. Hacer commit
-git commit -m "Sistema de Gestión de Licencias v2.0 - Completo y funcional"
-
-# 4. Crear repositorio en GitHub y conectar
-git remote add origin https://github.com/tuusuario/licencias_mza.git
-
-# 5. Subir
-git push -u origin main
-```
-
-## 📝 Resumen de mejoras realizadas
-
-1. **✅ Créditos agregados**: "Creado por Nicolas Maure - nicomaure.com.ar" en el footer
-2. **✅ Impresión mejorada**: CSS optimizado para que Ctrl+P funcione correctamente
-3. **✅ PyInstaller corregido**: Incluye metadatos de streamlit y todas las dependencias
-4. **✅ Fecha GEI personalizable**: Ahora podés elegir la fecha de carga
-5. **✅ README completo**: Documentación profesional y detallada
-6. **✅ Licencia MIT agregada**
-7. **✅ .gitignore actualizado**
-
-¡Ahora tu proyecto está listo para GitHub y para distribuir! 🎉
 
