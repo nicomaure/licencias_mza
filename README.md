@@ -263,7 +263,7 @@ Para problemas técnicos o sugerencias:
 
 🗂️ **Sistema de Gestión de Licencias v2.0**
 
-Hecho con ❤️ por [Nicolas Maure](https://nicomaure.com.ar)
+Desarrollado por [Nicolas Maure](https://nicomaure.com.ar)
 
 Secretaría Escolar - Mendoza, Argentina
 
