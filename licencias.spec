@@ -17,6 +17,8 @@ hiddenimports = []
 hiddenimports += collect_submodules('streamlit')
 hiddenimports += collect_submodules('streamlit.runtime')
 hiddenimports += collect_submodules('streamlit.runtime.scriptrunner')
+hiddenimports += collect_submodules('sqlalchemy')
+hiddenimports += collect_submodules('pydantic')
 hiddenimports += [
     'streamlit.web.cli',
     'streamlit.runtime.legacy_caching',
@@ -49,6 +51,9 @@ hiddenimports += [
     'requests',
     'PIL',
     'PIL._imaging',
+    'numpy',
+    'numpy.core',
+    'typing_extensions',
 ]
 
 a = Analysis(
