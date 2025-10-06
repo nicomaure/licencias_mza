@@ -53,7 +53,7 @@ REM Instalar pip
 python\python.exe get-pip.py
 
 REM Instalar dependencias
-python\python.exe -m pip install streamlit==1.31.0 pandas==2.2.3 sqlmodel==0.0.14 openpyxl==3.1.2 python-dateutil==2.9.0
+python\python.exe -m pip install streamlit>=1.31.0 pandas>=2.2.3 sqlmodel>=0.0.25 openpyxl>=3.1.2 python-dateutil>=2.9.0
 
 REM Borrar archivo temporal
 del get-pip.py

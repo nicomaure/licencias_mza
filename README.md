@@ -191,10 +191,10 @@ cp ~/.licencias_escolares/licencias.db ~/backup_licencias.db
 ```
 streamlit>=1.31.0
 pandas>=2.2.3
-sqlmodel>=0.0.14
+sqlmodel>=0.0.25
 openpyxl>=3.1.2
-python-dateutil>=2.8.2
-pyinstaller>=6.3.0  # Opcional (método alternativo menos recomendado)
+python-dateutil>=2.9.0
+pyinstaller>=6.16.0  # Opcional (método alternativo menos recomendado)
 ```
 
 **Nota:** Se recomienda usar la versión portable en lugar de PyInstaller. Ver [README_DISTRIBUCION.md](README_DISTRIBUCION.md) para más detalles.

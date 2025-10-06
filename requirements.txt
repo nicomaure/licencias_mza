@@ -1,6 +1,9 @@
+# Dependencias principales
 streamlit>=1.31.0
 pandas>=2.2.3
-sqlmodel>=0.0.14
+sqlmodel>=0.0.25
 openpyxl>=3.1.2
-python-dateutil>=2.8.2
-pyinstaller>=6.3.0
+python-dateutil>=2.9.0
+
+# Dependencias opcionales (solo si usas PyInstaller - NO recomendado)
+# pyinstaller>=6.16.0
