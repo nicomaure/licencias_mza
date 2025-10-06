@@ -134,18 +134,15 @@ def df_to_html_table(df: pd.DataFrame) -> str:
     html += '</tr></thead><tbody>'
     
     for _, row in df.iterrows():
-        # Determinar si la licencia está completa
-        # Completa = tiene fecha_fin, articulo, codigo_osep y fecha_carga_gei
-        es_completa = (
-            row.get('fecha_fin') not in [None, '', '(Sin definir)'] and
-            row.get('articulo') not in [None, '', '(Pendiente)'] and
-            row.get('codigo_osep') not in [None, ''] and
-            row.get('fecha_carga_gei') not in [None, ''] and
-            row.get('estado_carga') == 'Cargada'
+        # Determinar si la licencia está marcada como CARGADA
+        # Solo verifica que esté marcada como Cargada y tenga fecha de carga GEI
+        es_cargada = (
+            row.get('estado_carga') == 'Cargada' and
+            row.get('fecha_carga_gei') not in [None, '']
         )
         
-        # Color de fondo y texto según si está completa
-        if es_completa:
+        # Color de fondo y texto según si está cargada
+        if es_cargada:
             row_style = 'background-color:#d4edda; color:#000000;'  # Verde claro con texto negro
         else:
             row_style = 'background-color:white;'  # Blanco normal
@@ -576,19 +573,17 @@ with tab2:
             st.metric("Docentes", docentes)
 
         # Leyenda de colores
-        st.caption("💡 **Leyenda:** Las filas con fondo verde claro indican licencias **completamente cargadas** (con todos los datos obligatorios + fecha de carga GEI)")
+        st.caption("💡 **Leyenda:** Las filas con fondo verde claro indican licencias **marcadas como CARGADAS** en el sistema GEI")
         
-        # Función para colorear filas completas
+        # Función para colorear filas cargadas
         def highlight_complete_rows(row):
-            """Aplica color verde claro a licencias completas"""
-            es_completa = (
-                row.get('fecha_fin') not in [None, '', '(Sin definir)'] and
-                row.get('articulo') not in [None, '', '(Pendiente)'] and
-                row.get('codigo_osep') not in [None, ''] and
-                row.get('fecha_carga_gei') not in [None, ''] and
-                row.get('estado_carga') == 'Cargada'
+            """Aplica color verde claro a licencias marcadas como CARGADAS"""
+            # Solo verifica que esté marcada como Cargada y tenga fecha de carga GEI
+            es_cargada = (
+                row.get('estado_carga') == 'Cargada' and
+                row.get('fecha_carga_gei') not in [None, '']
             )
-            color = 'background-color: #d4edda; color: #000000' if es_completa else ''
+            color = 'background-color: #d4edda; color: #000000' if es_cargada else ''
             return [color] * len(row)
         
         # Tabla interactiva con estilos
@@ -836,20 +831,18 @@ with tab4:
         st.divider()
         
         # Leyenda de colores
-        st.caption("💡 **Leyenda:** Las filas con fondo verde claro indican licencias **completamente cargadas** (con todos los datos obligatorios + fecha de carga GEI)")
+        st.caption("💡 **Leyenda:** Las filas con fondo verde claro indican licencias **marcadas como CARGADAS** en el sistema GEI")
         
-        # Función para colorear filas completas
+        # Función para colorear filas cargadas
         def highlight_complete_rows(row):
-            """Aplica color verde claro a licencias completas"""
-            es_completa = (
-                row.get('fecha_fin') not in [None, '', '(Sin definir)'] and
-                row.get('articulo') not in [None, '', '(Pendiente)'] and
-                row.get('codigo_osep') not in [None, ''] and
-                row.get('fecha_carga_gei') not in [None, ''] and
-                row.get('estado_carga') == 'Cargada'
+            """Aplica color verde claro a licencias marcadas como CARGADAS"""
+            # Solo verifica que esté marcada como Cargada y tenga fecha de carga GEI
+            es_cargada = (
+                row.get('estado_carga') == 'Cargada' and
+                row.get('fecha_carga_gei') not in [None, '']
             )
-            # Verde claro con texto negro para completas, transparente para incompletas
-            color = 'background-color: #d4edda; color: #000000' if es_completa else ''
+            # Verde claro con texto negro para cargadas, transparente para pendientes
+            color = 'background-color: #d4edda; color: #000000' if es_cargada else ''
             return [color] * len(row)
         
         # Aplicar estilos y mostrar tabla
