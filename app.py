@@ -243,6 +243,18 @@ def marcar_cargada(id_: int, fecha_carga: Optional[dt.date] = None):
     if fecha_carga is None:
         fecha_carga = dt.date.today()
     
+    # Validar que la fecha de carga no sea anterior a la fecha de inicio
+    try:
+        with Session(engine) as s:
+            lic = s.get(Licencia, id_)
+            if not lic:
+                return False, "No se encontró la licencia"
+            
+            if fecha_carga < lic.fecha_inicio:
+                return False, f"La fecha de carga GEI ({fecha_carga:%d/%m/%Y}) no puede ser anterior a la fecha de inicio de la licencia ({lic.fecha_inicio:%d/%m/%Y})"
+    except Exception as e:
+        return False, f"Error al validar: {e}"
+    
     return actualizar_licencia(
         id_,
         estado_carga="Cargada",
