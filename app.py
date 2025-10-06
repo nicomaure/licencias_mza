@@ -118,7 +118,7 @@ def df_to_html_table(df: pd.DataFrame) -> str:
         'fecha_inicio': 'Inicio',
         'fecha_fin': 'Fin',
         'articulo': 'Artículo',
-        'codigo_osep': 'OSEP',
+        'codigo_osep': 'Código',
         'estado_carga': 'Estado',
         'fecha_carga_gei': 'Carga GEI',
         'observaciones': 'Observaciones'
@@ -487,7 +487,7 @@ with tab1:
             articulo = st.text_input("Artículo", placeholder="Ej: Art. X inciso Y", help="Opcional: se puede completar después")
 
         with col3:
-            codigo_osep = st.text_input("Código OSEP", placeholder="Ej: AUS-12345")
+            codigo_osep = st.text_input("Código de licencia", placeholder="Ej: AUS-12345")
             observ = st.text_area("Observaciones", height=90)
 
         submitted = st.form_submit_button("💾 Guardar licencia", type="primary", use_container_width=True)
@@ -717,7 +717,7 @@ with tab3:
                     articulo_e = st.text_input("Artículo", value=lic.articulo or "", help="Opcional: se puede completar después")
 
                 with col3:
-                    codigo_osep_e = st.text_input("Código OSEP", value=lic.codigo_osep or "")
+                    codigo_osep_e = st.text_input("Código de licencia", value=lic.codigo_osep or "")
                     estado_e = st.selectbox("Estado*", options=get_estados(),
                                             index=get_estados().index(lic.estado_carga))
                     observ_e = st.text_area("Observaciones", value=lic.observaciones or "", height=90)
@@ -738,7 +738,7 @@ with tab3:
                         for error in errores:
                             st.error(f"❌ {error}")
                     else:
-                        # Preparar código OSEP: permite actualizar con string vacío o con valor
+                        # Preparar código de licencia: permite actualizar con string vacío o con valor
                         codigo_osep_valor = codigo_osep_e.strip() if codigo_osep_e and codigo_osep_e.strip() else None
                         articulo_valor = articulo_e.strip() if articulo_e and articulo_e.strip() else None
                         
