@@ -1,0 +1,157 @@
+==============================================
+Sistema de Gestión de Licencias v2.0
+Secretaría Escolar - Mendoza
+==============================================
+
+📋 INSTALACIÓN
+--------------
+1. Descomprimir el archivo ZIP en cualquier carpeta de tu PC
+2. NO necesita instalar Python ni ningún programa adicional
+3. Todo está incluido y listo para usar
+
+
+🚀 CÓMO USAR LA APLICACIÓN
+---------------------------
+1. Hacer DOBLE CLIC en el archivo "INICIAR.bat"
+2. Se abrirá una ventana negra (CMD) - NO LA CIERRES
+3. Después de 5 segundos, se abrirá tu navegador automáticamente
+4. Si no se abre, abrí manualmente: http://localhost:8501
+
+
+❌ CERRAR LA APLICACIÓN
+------------------------
+Para cerrar correctamente:
+1. Ir a la ventana negra (CMD) que quedó abierta
+2. Presionar Ctrl+C
+3. Cerrar la ventana
+4. Cerrar la pestaña del navegador
+
+
+💾 UBICACIÓN DE LOS DATOS
+--------------------------
+Los datos de las licencias se guardan automáticamente en:
+C:\Users\[TuUsuario]\AppData\Local\LicenciasEscolares\licencias.db
+
+Esta ubicación permite que:
+- Los datos persistan entre sesiones
+- No se necesiten permisos de administrador
+- Se puedan hacer backups fácilmente
+
+
+📦 HACER BACKUP (COPIA DE SEGURIDAD)
+-------------------------------------
+Opción 1 - Manual:
+1. Presionar Windows + R
+2. Escribir: %LOCALAPPDATA%\LicenciasEscolares
+3. Presionar Enter
+4. Copiar el archivo "licencias.db" a un lugar seguro (USB, nube, etc.)
+
+Opción 2 - Comando rápido:
+Ejecutar en CMD:
+xcopy "%LOCALAPPDATA%\LicenciasEscolares\licencias.db" "C:\Backup\" /Y
+
+
+🔄 RESTAURAR BACKUP
+-------------------
+1. Cerrar la aplicación completamente
+2. Ir a: C:\Users\[TuUsuario]\AppData\Local\LicenciasEscolares\
+3. Reemplazar "licencias.db" con tu archivo de backup
+4. Abrir nuevamente la aplicación
+
+
+⚠️ SOLUCIÓN DE PROBLEMAS
+-------------------------
+
+PROBLEMA: "El puerto 8501 está en uso"
+SOLUCIÓN:
+- Cerrar cualquier otra instancia de la aplicación
+- Abrir Administrador de tareas (Ctrl+Shift+Esc)
+- Finalizar procesos "python.exe" o "cmd.exe" sospechosos
+- Intentar nuevamente
+
+
+PROBLEMA: "No se abre el navegador"
+SOLUCIÓN:
+- Abrir manualmente en el navegador: http://localhost:8501
+- Verificar que no haya firewall bloqueando
+- Probar con otro navegador (Chrome, Edge, Firefox)
+
+
+PROBLEMA: "Error al iniciar la aplicación"
+SOLUCIÓN:
+- Verificar que la carpeta "python" esté completa
+- Verificar que "app.py" exista en la misma carpeta
+- Reinstalar: borrar todo y descomprimir nuevamente el ZIP
+
+
+PROBLEMA: "La aplicación está lenta"
+SOLUCIÓN:
+- Cerrar otras aplicaciones que consuman recursos
+- Verificar que no haya múltiples instancias abiertas
+- Reiniciar la aplicación
+
+
+📱 REQUISITOS DEL SISTEMA
+--------------------------
+- Windows 10 o Windows 11 (64 bits)
+- 2 GB de RAM mínimo (4 GB recomendado)
+- 500 MB de espacio en disco
+- Navegador web moderno (Chrome, Edge, Firefox)
+- Conexión a internet NO requerida (funciona offline)
+
+
+📞 SOPORTE TÉCNICO
+------------------
+Desarrollador: Nicolas Maure
+Web: nicomaure.com.ar
+
+Para reportar problemas o sugerencias:
+- Visitar el sitio web del desarrollador
+- Contactar a través del sistema de tickets
+
+
+📄 FUNCIONALIDADES PRINCIPALES
+-------------------------------
+✅ Cargar nuevas licencias
+✅ Buscar y filtrar licencias
+✅ Editar licencias existentes
+✅ Eliminar licencias
+✅ Marcar como cargadas en GEI (con fecha personalizable)
+✅ Exportar a CSV y Excel
+✅ Generar reportes mensuales
+✅ Imprimir reportes (Ctrl+P)
+✅ Estadísticas en tiempo real
+
+
+🔒 PRIVACIDAD Y SEGURIDAD
+--------------------------
+- Todos los datos se almacenan LOCALMENTE en tu PC
+- NO se envía información a internet
+- NO requiere registro ni login
+- Base de datos SQLite encriptable (opcional)
+
+
+📝 CONSEJOS DE USO
+------------------
+1. Hacer backups semanales de la base de datos
+2. Cerrar correctamente con Ctrl+C para evitar corrupción
+3. No mover la carpeta mientras la aplicación está abierta
+4. Usar filtros de búsqueda para encontrar licencias rápidamente
+5. Exportar a Excel para análisis adicionales
+
+
+🆕 ACTUALIZACIONES
+------------------
+Cuando haya una nueva versión:
+1. Hacer backup de tus datos
+2. Cerrar la aplicación completamente
+3. Reemplazar solo el archivo "app.py" con el nuevo
+4. O descomprimir la nueva versión completa
+5. Tus datos NO se perderán (están en AppData)
+
+
+==============================================
+Sistema desarrollado por Nicolas Maure
+nicomaure.com.ar
+Versión 2.0 - Octubre 2025
+==============================================
