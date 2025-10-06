@@ -230,7 +230,24 @@ def marcar_cargada(id_: int, fecha_carga: Optional[dt.date] = None):
 def obtener_licencia(id_: int):
     try:
         with Session(engine) as s:
-            return s.get(Licencia, id_)
+            lic = s.get(Licencia, id_)
+            if lic:
+                # Crear una copia independiente del objeto para evitar problemas de sesión
+                return Licencia(
+                    id=lic.id,
+                    apellido=lic.apellido,
+                    nombre=lic.nombre,
+                    rol=lic.rol,
+                    fecha_inicio=lic.fecha_inicio,
+                    fecha_fin=lic.fecha_fin,
+                    articulo=lic.articulo,
+                    codigo_osep=lic.codigo_osep,
+                    estado_carga=lic.estado_carga,
+                    fecha_carga_gei=lic.fecha_carga_gei,
+                    observaciones=lic.observaciones,
+                    fecha_creacion=lic.fecha_creacion
+                )
+            return None
     except Exception as e:
         st.error(f"Error al obtener licencia: {e}")
         return None
@@ -599,11 +616,15 @@ with tab3:
             if success:
                 st.success(msg)
                 del st.session_state.confirmar_eliminar
+                if 'licencia_cargada_id' in st.session_state:
+                    del st.session_state.licencia_cargada_id
                 st.rerun()
             else:
                 st.error(msg)
 
-    if cargar_btn:
+    # Cargar datos cuando se presiona el botón o después de actualizar
+    if cargar_btn or st.session_state.get('licencia_cargada_id') == id_editar:
+        st.session_state.licencia_cargada_id = id_editar
         lic = obtener_licencia(int(id_editar))
 
         if not lic:
@@ -647,6 +668,9 @@ with tab3:
                         for error in errores:
                             st.error(f"❌ {error}")
                     else:
+                        # Preparar código OSEP: permite actualizar con string vacío o con valor
+                        codigo_osep_valor = codigo_osep_e.strip() if codigo_osep_e and codigo_osep_e.strip() else None
+                        
                         success, msg = actualizar_licencia(
                             int(id_editar),
                             apellido=apellido_e.strip().upper(),
@@ -655,7 +679,7 @@ with tab3:
                             fecha_inicio=f_ini_e,
                             fecha_fin=f_fin_e,
                             articulo=articulo_e.strip(),
-                            codigo_osep=codigo_osep_e.strip() if codigo_osep_e.strip() else None,
+                            codigo_osep=codigo_osep_valor,
                             estado_carga=estado_e,
                             observaciones=observ_e.strip() if observ_e.strip() else None,
                         )
