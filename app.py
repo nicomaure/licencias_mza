@@ -214,7 +214,8 @@ def buscar_licencias(
                 q = q.where(Licencia.fecha_inicio >= f_ini)
             if f_fin:
                 q = q.where(Licencia.fecha_fin <= f_fin)
-            q = q.order_by(Licencia.apellido, Licencia.nombre, Licencia.fecha_inicio)
+            # Ordenar por ID descendente (más recientes primero)
+            q = q.order_by(Licencia.id.desc())
             return s.exec(q).all()
     except Exception as e:
         st.error(f"Error al buscar licencias: {e}")
@@ -735,7 +736,21 @@ with tab4:
     proximo_mes = primer_dia + relativedelta(months=1)
     ultimo_dia = proximo_mes - dt.timedelta(days=1)
 
-    rows_mes = buscar_licencias(f_ini=primer_dia, f_fin=ultimo_dia)
+    # Buscar licencias que INICIEN en el mes seleccionado
+    # Incluye licencias con o sin fecha_fin
+    try:
+        with Session(engine) as s:
+            q = select(Licencia)
+            # Licencias que inicien en el mes
+            q = q.where(Licencia.fecha_inicio >= primer_dia)
+            q = q.where(Licencia.fecha_inicio <= ultimo_dia)
+            # Ordenar por fecha_inicio y luego por apellido
+            q = q.order_by(Licencia.fecha_inicio, Licencia.apellido, Licencia.nombre)
+            rows_mes = s.exec(q).all()
+    except Exception as e:
+        st.error(f"Error al buscar licencias: {e}")
+        rows_mes = []
+    
     df_mes = to_df(rows_mes)
 
     if df_mes.empty:
