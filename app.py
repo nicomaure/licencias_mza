@@ -20,7 +20,7 @@ def get_app_path():
 
 
 def get_data_path():
-    """Obtiene el directorio de datos en AppData/Local para evitar problemas de permisos"""
+    """Obtiene el directorio de datos en AppData para evitar problemas de permisos"""
     if sys.platform == "win32":
         data_dir = Path(os.environ.get('LOCALAPPDATA', os.path.expanduser('~'))) / "LicenciasEscolares"
     else:
@@ -105,7 +105,7 @@ def to_df(rows: List[Licencia]) -> pd.DataFrame:
 
 
 def df_to_html_table(df: pd.DataFrame) -> str:
-    """Genera tabla HTML para impresión con estilos inline"""
+    """Genera tabla HTML para impresión con estilos inline y colores para licencias completas"""
     if df.empty:
         return "<p>No hay datos</p>"
     
@@ -134,7 +134,23 @@ def df_to_html_table(df: pd.DataFrame) -> str:
     html += '</tr></thead><tbody>'
     
     for _, row in df.iterrows():
-        html += '<tr>'
+        # Determinar si la licencia está completa
+        # Completa = tiene fecha_fin, articulo, codigo_osep y fecha_carga_gei
+        es_completa = (
+            row.get('fecha_fin') not in [None, '', '(Sin definir)'] and
+            row.get('articulo') not in [None, '', '(Pendiente)'] and
+            row.get('codigo_osep') not in [None, ''] and
+            row.get('fecha_carga_gei') not in [None, ''] and
+            row.get('estado_carga') == 'Cargada'
+        )
+        
+        # Color de fondo y texto según si está completa
+        if es_completa:
+            row_style = 'background-color:#d4edda; color:#000000;'  # Verde claro con texto negro
+        else:
+            row_style = 'background-color:white;'  # Blanco normal
+        
+        html += f'<tr style="{row_style}">'
         for col in df.columns:
             val = row[col] if pd.notna(row[col]) else ''
             html += f'<td style="border:1px solid #ddd; padding:4px 6px;">{val}</td>'
@@ -547,8 +563,25 @@ with tab2:
             docentes = len([r for r in rows if r.rol == "Docente"])
             st.metric("Docentes", docentes)
 
-        # Tabla interactiva para pantalla
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        # Leyenda de colores
+        st.caption("💡 **Leyenda:** Las filas con fondo verde claro indican licencias **completamente cargadas** (con todos los datos obligatorios + fecha de carga GEI)")
+        
+        # Función para colorear filas completas
+        def highlight_complete_rows(row):
+            """Aplica color verde claro a licencias completas"""
+            es_completa = (
+                row.get('fecha_fin') not in [None, '', '(Sin definir)'] and
+                row.get('articulo') not in [None, '', '(Pendiente)'] and
+                row.get('codigo_osep') not in [None, ''] and
+                row.get('fecha_carga_gei') not in [None, ''] and
+                row.get('estado_carga') == 'Cargada'
+            )
+            color = 'background-color: #d4edda; color: #000000' if es_completa else ''
+            return [color] * len(row)
+        
+        # Tabla interactiva con estilos
+        df_styled = df.style.apply(highlight_complete_rows, axis=1)
+        st.dataframe(df_styled, use_container_width=True, hide_index=True)
         
         # HTML completo para impresión
         html_table = df_to_html_table(df)
@@ -790,8 +823,26 @@ with tab4:
 
         st.divider()
         
-        # Tabla interactiva para pantalla
-        st.dataframe(df_mes, use_container_width=True, hide_index=True)
+        # Leyenda de colores
+        st.caption("💡 **Leyenda:** Las filas con fondo verde claro indican licencias **completamente cargadas** (con todos los datos obligatorios + fecha de carga GEI)")
+        
+        # Función para colorear filas completas
+        def highlight_complete_rows(row):
+            """Aplica color verde claro a licencias completas"""
+            es_completa = (
+                row.get('fecha_fin') not in [None, '', '(Sin definir)'] and
+                row.get('articulo') not in [None, '', '(Pendiente)'] and
+                row.get('codigo_osep') not in [None, ''] and
+                row.get('fecha_carga_gei') not in [None, ''] and
+                row.get('estado_carga') == 'Cargada'
+            )
+            # Verde claro con texto negro para completas, transparente para incompletas
+            color = 'background-color: #d4edda; color: #000000' if es_completa else ''
+            return [color] * len(row)
+        
+        # Aplicar estilos y mostrar tabla
+        df_styled = df_mes.style.apply(highlight_complete_rows, axis=1)
+        st.dataframe(df_styled, use_container_width=True, hide_index=True)
 
         st.divider()
         
