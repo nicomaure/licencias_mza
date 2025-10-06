@@ -289,9 +289,34 @@ st.markdown("""
         button,
         .stTabs,
         .stMarkdown > div > div > button,
-        iframe {
+        iframe,
+        .no-print {
             display: none !important;
             visibility: hidden !important;
+        }
+        
+        /* Ocultar el título principal de la app */
+        h1:first-of-type {
+            display: none !important;
+        }
+        
+        /* Ocultar el expander de información */
+        [data-testid="stExpander"] {
+            display: none !important;
+        }
+        
+        /* Ocultar divider y captions del footer */
+        hr:last-of-type,
+        .stMarkdown:has(hr) ~ .stMarkdown {
+            display: none !important;
+        }
+        
+        /* Ocultar últimos 3 captions (divider + 2 líneas de créditos) */
+        .stMarkdown > div:has(hr),
+        body > div:last-child .stMarkdown:nth-last-of-type(1),
+        body > div:last-child .stMarkdown:nth-last-of-type(2),
+        body > div:last-child .stMarkdown:nth-last-of-type(3) {
+            display: none !important;
         }
         
         /* Ocultar dataframe interactivo */
@@ -846,13 +871,6 @@ with tab4:
             border: 1px solid #000;
             padding: 5px 8px;
         }}
-        .footer {{
-            margin-top: 30px;
-            font-size: 9pt;
-            text-align: center;
-            border-top: 1px solid #ccc;
-            padding-top: 10px;
-        }}
         @media print {{
             button {{ display: none; }}
         }}
@@ -870,11 +888,6 @@ with tab4:
     </div>
     
     {html_table_print}
-    
-    <div class="footer">
-        <p>Sistema de Gestión de Licencias - Secretaría Escolar Mendoza | Versión 2.0</p>
-        <p>Desarrollado por Nicolas Maure | nicomaure.com.ar</p>
-    </div>
     
     <div style="text-align: center; margin-top: 20px;">
         <button onclick="window.print()" style="padding: 10px 20px; font-size: 14px; background-color: #ff4b4b; color: white; border: none; border-radius: 5px; cursor: pointer;">
