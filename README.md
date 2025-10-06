@@ -1,5 +1,25 @@
 
-# 🗂️ Sistema de Gestión de Licencias - Secretaría Escolar Mendoza
+# 🗂️ Sistema de Gestión de Licencias - Secreta### Opción B: Generar versión portable para Windows
+
+Para distribuir la aplicación sin requerir instalación de Python:
+
+1. **Seguir la guía completa:** Ver [README_DISTRIBUCION.md](README_DISTRIBUCION.md)
+
+2. **Resumen rápido:**
+   - Descargar Python embebido (portable)
+   - Instalar dependencias en el Python portable
+   - Comprimir y distribuir
+
+3. **Ventajas:**
+   - No requiere instalación de Python
+   - Funciona en cualquier PC con Windows 10/11
+   - Sin errores de importlib_metadata
+   - Tamaño: ~80-100 MB comprimido
+
+4. **Los usuarios solo:**
+   - Descomprimen el ZIP
+   - Ejecutan `INICIAR.bat`
+   - ¡Listo!za
 
 Sistema completo de gestión de licencias escolares para Mendoza, Argentina. Desarrollado con Python y Streamlit.
 
@@ -153,52 +173,58 @@ cp ~/.licencias_escolares/licencias.db ~/backup_licencias.db
 
 ## 🛠️ Requisitos del sistema
 
-### Para ejecutar directamente:
+### Para ejecutar directamente (desarrollo):
 - Python 3.8 o superior
 - Windows 10/11, Linux o macOS
 - 100 MB de espacio en disco
+- pip para instalar dependencias
 
-### Para ejecutable (.exe):
+### Para versión portable (distribución):
 - Windows 10/11 (64 bits)
 - 2 GB RAM mínimo
-- 500 MB espacio en disco
+- 200 MB espacio en disco
 - Navegador web moderno
+- **NO requiere instalar Python** (viene incluido)
 
 ## 📦 Dependencias
 
 ```
-streamlit==1.31.0
-pandas==2.2.0
-sqlmodel==0.0.14
-openpyxl==3.1.2
-python-dateutil==2.8.2
-pyinstaller==6.3.0  # Solo para generar .exe
+streamlit>=1.31.0
+pandas>=2.2.3
+sqlmodel>=0.0.14
+openpyxl>=3.1.2
+python-dateutil>=2.8.2
+pyinstaller>=6.3.0  # Opcional (método alternativo menos recomendado)
 ```
+
+**Nota:** Se recomienda usar la versión portable en lugar de PyInstaller. Ver [README_DISTRIBUCION.md](README_DISTRIBUCION.md) para más detalles.
 
 ## 🐛 Solución de problemas
 
-### Windows Defender bloquea el .exe
+### Windows Defender bloquea la aplicación
 1. Clic en "Más información"
 2. Clic en "Ejecutar de todas formas"
-3. Es seguro, es tu propio ejecutable
+3. Es seguro, no es malware
 
 ### No se puede guardar datos
-- Ejecutar como Administrador
-- Verificar permisos en AppData
-
-### Error al generar ejecutable
-```bash
-# Limpiar y volver a generar
-rmdir /s /q build dist
-pyinstaller --clean licencias.spec
-```
+- Verificar permisos en la carpeta AppData
+- En algunos casos: ejecutar `INICIAR.bat` como Administrador
 
 ### La aplicación no se abre en el navegador
 - Abrir manualmente: `http://localhost:8501`
+- Verificar que no haya otra instancia corriendo
+- Probar con otro navegador (Chrome, Edge, Firefox)
 
-### Error de importlib_metadata
-- El archivo `.spec` corrige esto automáticamente
-- Si persiste: `pip install importlib-metadata`
+### Error "Puerto 8501 en uso"
+```bash
+# Cerrar otras instancias o cambiar puerto
+streamlit run app.py --server.port 8502
+```
+
+### Problemas con Python embebido
+- Ver la guía detallada: [README_DISTRIBUCION.md](README_DISTRIBUCION.md)
+- Verificar que `python311._pth` esté correctamente configurado
+- Asegurar que pip esté instalado en el Python portable
 
 ## 🔄 Actualizar la aplicación
 
@@ -216,17 +242,26 @@ pip install -r requirements.txt --upgrade
 
 ```
 licencias_mza/
-├── app.py                 # Aplicación principal
-├── requirements.txt       # Dependencias
-├── licencias.spec        # Configuración PyInstaller
-├── run.bat               # Ejecutar en Windows
-├── run.sh                # Ejecutar en Linux/Mac
-├── build_exe.bat         # Generar ejecutable Windows
-├── README.md             # Este archivo
-├── LICENSE               # Licencia MIT
-├── .gitignore           # Archivos ignorados por Git
-└── .venv/               # Entorno virtual (no se sube a Git)
+├── app.py                        # Aplicación principal
+├── requirements.txt              # Dependencias
+├── run.bat                       # Ejecutar en Windows (desarrollo)
+├── run.sh                        # Ejecutar en Linux/Mac (desarrollo)
+├── INICIAR.bat                   # Launcher para versión portable
+├── README.md                     # Documentación principal
+├── README_DISTRIBUCION.md        # Guía para generar versión portable
+├── INSTRUCCIONES_USUARIO.txt     # Instrucciones para usuarios finales
+├── LICENSE                       # Licencia MIT
+├── .gitignore                    # Archivos ignorados por Git
+└── .venv/                        # Entorno virtual (no se sube a Git)
 ```
+
+### Archivos deprecados (no usar)
+```
+├── licencias.spec        # ❌ PyInstaller (genera errores importlib_metadata)
+└── build_exe.bat         # ❌ Método antiguo con PyInstaller
+```
+
+**Nota:** Para distribución, usar el método de Python portable descrito en [README_DISTRIBUCION.md](README_DISTRIBUCION.md)
 ## 🤝 Contribuir
 
 1. Fork el proyecto
@@ -235,7 +270,13 @@ licencias_mza/
 4. Push: `git push origin feature/nueva-funcionalidad`
 5. Crear Pull Request
 
-## 📄 Licencia
+## � Documentación adicional
+
+- **[README_DISTRIBUCION.md](README_DISTRIBUCION.md)** - Guía completa para generar versión portable
+- **[INSTRUCCIONES_USUARIO.txt](INSTRUCCIONES_USUARIO.txt)** - Instrucciones para usuarios finales
+- **[LICENSE](LICENSE)** - Licencia MIT del proyecto
+
+## �📄 Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
