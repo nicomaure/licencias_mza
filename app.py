@@ -44,8 +44,8 @@ class Licencia(SQLModel, table=True):
     nombre: str
     rol: str
     fecha_inicio: dt.date
-    fecha_fin: dt.date
-    articulo: str
+    fecha_fin: Optional[dt.date] = None
+    articulo: Optional[str] = None
     codigo_osep: Optional[str] = None
     estado_carga: str = "Pendiente"
     fecha_carga_gei: Optional[dt.date] = None
@@ -82,11 +82,17 @@ def to_df(rows: List[Licencia]) -> pd.DataFrame:
     if 'fecha_inicio' in df.columns:
         df['fecha_inicio'] = pd.to_datetime(df['fecha_inicio']).dt.strftime('%d/%m/%Y')
     if 'fecha_fin' in df.columns:
-        df['fecha_fin'] = pd.to_datetime(df['fecha_fin']).dt.strftime('%d/%m/%Y')
+        df['fecha_fin'] = df['fecha_fin'].apply(
+            lambda x: pd.to_datetime(x).strftime('%d/%m/%Y') if pd.notna(x) else '(Sin definir)'
+        )
     if 'fecha_carga_gei' in df.columns:
         df['fecha_carga_gei'] = df['fecha_carga_gei'].apply(
             lambda x: pd.to_datetime(x).strftime('%d/%m/%Y') if pd.notna(x) else ''
         )
+    
+    # Reemplazar None en articulo con texto indicativo
+    if 'articulo' in df.columns:
+        df['articulo'] = df['articulo'].fillna('(Pendiente)')
 
     columnas_orden = [
         "id", "apellido", "nombre", "rol", "fecha_inicio", "fecha_fin",
@@ -451,8 +457,8 @@ with tab1:
 
         with col2:
             f_ini = st.date_input("Fecha inicio*", value=dt.date.today())
-            f_fin = st.date_input("Fecha fin*", value=dt.date.today())
-            articulo = st.text_input("Artículo*", placeholder="Ej: Art. X inciso Y")
+            f_fin = st.date_input("Fecha fin", value=None, help="Opcional: se puede completar después")
+            articulo = st.text_input("Artículo", placeholder="Ej: Art. X inciso Y", help="Opcional: se puede completar después")
 
         with col3:
             codigo_osep = st.text_input("Código OSEP", placeholder="Ej: AUS-12345")
@@ -466,9 +472,8 @@ with tab1:
                 errores.append("El apellido es obligatorio")
             if not nombre or not nombre.strip():
                 errores.append("El nombre es obligatorio")
-            if not articulo or not articulo.strip():
-                errores.append("El artículo es obligatorio")
-            if f_fin < f_ini:
+            # Validar fecha_fin solo si se ingresó
+            if f_fin and f_fin < f_ini:
                 errores.append("La fecha de fin no puede ser anterior a la de inicio")
 
             if errores:
@@ -480,10 +485,10 @@ with tab1:
                     nombre=nombre.strip().title(),
                     rol=rol,
                     fecha_inicio=f_ini,
-                    fecha_fin=f_fin,
-                    articulo=articulo.strip(),
-                    codigo_osep=codigo_osep.strip() if codigo_osep.strip() else None,
-                    observaciones=observ.strip() if observ.strip() else None,
+                    fecha_fin=f_fin if f_fin else None,
+                    articulo=articulo.strip() if articulo and articulo.strip() else None,
+                    codigo_osep=codigo_osep.strip() if codigo_osep and codigo_osep.strip() else None,
+                    observaciones=observ.strip() if observ and observ.strip() else None,
                 )
                 if lic:
                     st.success(f"✅ Licencia #{lic.id} guardada correctamente")
@@ -667,8 +672,8 @@ with tab3:
 
                 with col2:
                     f_ini_e = st.date_input("Fecha inicio*", value=lic.fecha_inicio)
-                    f_fin_e = st.date_input("Fecha fin*", value=lic.fecha_fin)
-                    articulo_e = st.text_input("Artículo*", value=lic.articulo)
+                    f_fin_e = st.date_input("Fecha fin", value=lic.fecha_fin, help="Opcional: se puede completar después")
+                    articulo_e = st.text_input("Artículo", value=lic.articulo or "", help="Opcional: se puede completar después")
 
                 with col3:
                     codigo_osep_e = st.text_input("Código OSEP", value=lic.codigo_osep or "")
@@ -684,9 +689,8 @@ with tab3:
                         errores.append("El apellido es obligatorio")
                     if not nombre_e or not nombre_e.strip():
                         errores.append("El nombre es obligatorio")
-                    if not articulo_e or not articulo_e.strip():
-                        errores.append("El artículo es obligatorio")
-                    if f_fin_e < f_ini_e:
+                    # Validar fecha_fin solo si se ingresó
+                    if f_fin_e and f_fin_e < f_ini_e:
                         errores.append("La fecha de fin no puede ser anterior a la de inicio")
 
                     if errores:
@@ -695,6 +699,7 @@ with tab3:
                     else:
                         # Preparar código OSEP: permite actualizar con string vacío o con valor
                         codigo_osep_valor = codigo_osep_e.strip() if codigo_osep_e and codigo_osep_e.strip() else None
+                        articulo_valor = articulo_e.strip() if articulo_e and articulo_e.strip() else None
                         
                         success, msg = actualizar_licencia(
                             int(id_editar),
@@ -702,11 +707,11 @@ with tab3:
                             nombre=nombre_e.strip().title(),
                             rol=rol_e,
                             fecha_inicio=f_ini_e,
-                            fecha_fin=f_fin_e,
-                            articulo=articulo_e.strip(),
+                            fecha_fin=f_fin_e if f_fin_e else None,
+                            articulo=articulo_valor,
                             codigo_osep=codigo_osep_valor,
                             estado_carga=estado_e,
-                            observaciones=observ_e.strip() if observ_e.strip() else None,
+                            observaciones=observ_e.strip() if observ_e and observ_e.strip() else None,
                         )
 
                         if success:
