@@ -1,3 +1,5 @@
+Ver el proyecto online ingresar en 
+(https://licenciasmza-hfrgtngcmusqmemh9kpmkv.streamlit.app/)
 
 # 🗂️ Sistema de Gestión de Licencias - Secreta### Opción B: Generar versión portable para Windows
 
